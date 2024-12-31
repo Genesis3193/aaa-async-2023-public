@@ -1,16 +1,20 @@
+from typing import Callable, Coroutine, Any, TypeVar, Union
 from asyncio import Task
-from typing import Callable, Coroutine, Any
 
 
-async def await_my_func(f: Callable[..., Coroutine] | Task | Coroutine) -> Any:
-    # На вход приходит одна из стадий жизненного цикла корутины, необходимо вернуть результат
-    # её выполнения.
+T = TypeVar("T")
+
+
+async def await_my_func(
+    f: Union[Callable[..., Coroutine[Any, Any, T]], Task[T], Coroutine[Any, Any, T]]
+) -> T:
 
     if isinstance(f, Callable):
-        # YOUR CODE GOES HERE
+        coroutine = f()
+        return await coroutine
     elif isinstance(f, Task):
-        # YOUR CODE GOES HERE
+        return await f
     elif isinstance(f, Coroutine):
-        # YOUR CODE GOES HERE
+        return await f
     else:
-        raise ValueError('invalid argument')
+        raise ValueError("invalid argument")
